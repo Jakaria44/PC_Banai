@@ -146,7 +146,7 @@ export default function ExpertBuilder() {
                       ).length === 0
                     }
                     onClick={() => {
-                      router.push("/build/saved");
+                      router.push("/build/saved/23");
                     }}
                   >
                     Save Build

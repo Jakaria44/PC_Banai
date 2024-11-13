@@ -1,8 +1,16 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ExpertiseLevel, ThemeType } from "@/types";
-import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
+import { LayoutDashboardIcon, LogOutIcon, MonitorIcon, MoonIcon, SunIcon, UserCircleIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import React, { ReactNode } from "react";
 
@@ -59,7 +67,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
               </Button> */}
             </div>
 
-            {/* Right Section: Expertise Level & Theme Toggle */}
+            {/* Right Section: Profile, Theme Toggle */}
             <div className="flex items-center space-x-6">
               {/* Theme Toggle */}
               <Button
@@ -74,6 +82,54 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
                   <SunIcon className="h-5 w-5" />
                 )}
               </Button>
+
+              {/* Profile Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src="/placeholder-avatar.jpg" alt="Profile" />
+                      <AvatarFallback>
+                        <UserIcon className="h-6 w-6" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      <p className="font-medium">Username</p>
+                      <p className="text-sm text-muted-foreground">
+                        username@example.com
+                      </p>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="cursor-pointer flex items-center">
+                      <UserCircleIcon className="mr-2 h-4 w-4" />
+                      <span>My Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/build/saved" className="cursor-pointer flex items-center">
+                      <LayoutDashboardIcon className="mr-2 h-4 w-4" />
+                      <span>My Builds</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer text-red-600 dark:text-red-400"
+                    onClick={() => {
+                      // Add your logout logic here
+                      console.log("Logging out...");
+                    }}
+                  >
+                    <LogOutIcon className="mr-2 h-4 w-4" />
+                    <span>Log Out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -89,7 +145,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
       {/* Footer */}
       <footer className="border-t border-gray-200 dark:border-gray-800 px-8 py-6">
         <div className="text-center text-gray-600 dark:text-gray-400">
-          BuildMaster Pro - Your Trusted PC Building Companion © 2024
+          PCBanabo - Your Trusted PC Building Companion © 2024
         </div>
       </footer>
     </div>
