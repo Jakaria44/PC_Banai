@@ -18,9 +18,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { FilterOption } from "@/types/components";
+import {
+  BaseComponent,
+  ComponentCategory,
+  FilterOption,
+  SelectedComponent,
+} from "@/types/components";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
@@ -28,12 +34,12 @@ import { Input } from "../ui/input";
 interface ComponentSelectionPageProps {
   title: string;
   filters: FilterOption[];
-  components: any[];
+  components: BaseComponent[];
   priceRange: { min: number; max: number };
-  categoryId: string;
+  categoryId: ComponentCategory;
 }
 
-export const ComponentSelectionPage: React.FC<ComponentSelectionPageProps> = ({
+const ComponentSelectionPage: React.FC<ComponentSelectionPageProps> = ({
   title,
   filters,
   components,
@@ -52,7 +58,6 @@ export const ComponentSelectionPage: React.FC<ComponentSelectionPageProps> = ({
   const [sortOption, setSortOption] = useState("price-asc");
 
   useEffect(() => {
-    // Update URL based on filters
     const params = new URLSearchParams();
     Object.entries(selectedFilters).forEach(([key, values]) => {
       if (values.length > 0) {
@@ -79,11 +84,30 @@ export const ComponentSelectionPage: React.FC<ComponentSelectionPageProps> = ({
     });
   };
 
+  const handleComponentSelection = (component: BaseComponent) => {
+    const selectedComponent: SelectedComponent = {
+      id: component.id,
+      name: component.name,
+      price: component.price,
+      image: component.image,
+      highlights: component.highlights,
+      category: component.category,
+      wattage: component.wattage,
+      type: component.type,
+    };
+
+    localStorage.setItem(
+      `selectedComponent_${categoryId}`,
+      JSON.stringify(selectedComponent)
+    );
+    router.push("/build/expert");
+  };
+
   return (
     <div className="container mx-auto py-8">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
-          <Button variant="outline" onClick={() => router.back() }>
+          <Button variant="outline" onClick={() => router.back()}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
@@ -124,9 +148,7 @@ export const ComponentSelectionPage: React.FC<ComponentSelectionPageProps> = ({
                         max={priceRange.max}
                         step={10}
                         value={currentPriceRange}
-                        onValueChange={(value) => {
-                          setCurrentPriceRange(value);
-                        }}
+                        onValueChange={setCurrentPriceRange}
                       />
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-2">
@@ -226,13 +248,18 @@ export const ComponentSelectionPage: React.FC<ComponentSelectionPageProps> = ({
               >
                 <CardContent className="p-4">
                   <Image
-                    src={component.image ?? null}
+                    src={component.image}
                     alt={component.name}
                     width={500}
                     height={200}
                     className="w-full h-48 object-cover rounded-lg mb-4"
                   />
-                  <h3 className="font-semibold mb-2">{component.name}</h3>
+
+                  <Link
+                    href={`/build/component/${component.category}/${component.id}`}
+                  >
+                    <h3 className="font-semibold mb-2 hover:text-blue-500">{component.name}</h3>
+                  </Link>
                   <p className="text-xl font-bold mb-3">${component.price}</p>
                   <div className="space-y-2 mb-4">
                     {component.highlights.map((highlight, idx) => (
@@ -243,21 +270,7 @@ export const ComponentSelectionPage: React.FC<ComponentSelectionPageProps> = ({
                   </div>
                   <Button
                     className="w-full"
-                    onClick={() => {
-                      // Save to local storage using categoryId from URL
-                      localStorage.setItem(
-                        `selectedComponent_${categoryId}`,
-                        JSON.stringify({
-                          id: component.id,
-                          name: component.name,
-                          price: component.price,
-                          image: component.image,
-                          highlights: component.highlights,
-                          category: categoryId,
-                        })
-                      );
-                      router.push("/build/expert");
-                    }}
+                    onClick={() => handleComponentSelection(component)}
                   >
                     Add to Build
                   </Button>
@@ -270,3 +283,5 @@ export const ComponentSelectionPage: React.FC<ComponentSelectionPageProps> = ({
     </div>
   );
 };
+
+export default ComponentSelectionPage;

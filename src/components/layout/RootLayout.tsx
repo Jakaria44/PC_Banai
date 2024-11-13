@@ -1,9 +1,10 @@
-'use client'
+"use client";
 
 import { Button } from "@/components/ui/button";
-import { ExpertiseLevel, ThemeType } from '@/types';
-import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react';
-import React, { ReactNode } from 'react';
+import { ExpertiseLevel, ThemeType } from "@/types";
+import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
+import Link from "next/link";
+import React, { ReactNode } from "react";
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -19,7 +20,13 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
+    <div
+      className={`min-h-screen ${
+        theme === "dark"
+          ? "dark bg-gray-950 text-gray-100"
+          : "bg-gray-50 text-gray-900"
+      }`}
+    >
       {/* Navbar */}
       <nav className="border-b border-gray-200 dark:border-gray-800">
         <div className="mx-auto px-8 py-4">
@@ -27,25 +34,33 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
             {/* Logo and Brand */}
             <div className="flex items-center space-x-2">
               <MonitorIcon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              <span className="text-2xl font-bold">BuildMaster Pro</span>
+              <Link href={"/"}>
+                <span className="text-2xl font-bold">PCBanabo</span>
+              </Link>
             </div>
 
             {/* Navigation Links */}
             <div className="flex space-x-8">
-              <Button variant="ghost" className="text-lg">
-                Build Now
-              </Button>
-              <Button variant="ghost" className="text-lg">
+              <Link href="/">
+                <Button variant="ghost" className="text-lg">
+                  Build Now
+                </Button>
+              </Link>
+              <Link href="/admin/add-comp">
+                <Button variant="ghost" className="text-lg">
+                  Add Component
+                </Button>
+              </Link>
+              {/* <Button variant="ghost" className="text-lg">
                 Community Builds
               </Button>
               <Button variant="ghost" className="text-lg">
                 Benchmarks
-              </Button>
+              </Button> */}
             </div>
 
             {/* Right Section: Expertise Level & Theme Toggle */}
             <div className="flex items-center space-x-6">
-
               {/* Theme Toggle */}
               <Button
                 variant="outline"
@@ -53,7 +68,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
                 onClick={toggleTheme}
                 className="rounded-full"
               >
-                {theme === 'light' ? (
+                {theme === "light" ? (
                   <MoonIcon className="h-5 w-5" />
                 ) : (
                   <SunIcon className="h-5 w-5" />

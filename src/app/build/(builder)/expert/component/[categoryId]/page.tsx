@@ -1,63 +1,87 @@
 "use client";
 
-import { ComponentSelectionPage } from "@/components/builder/ComponentSelectionPage";
-import { coolerFilters, cpuFilters } from "@/data/filters";
+import ComponentSelectionPage from '@/components/builder/ComponentSelectionPage';
+import { componentFilters } from '@/data/filters';
+import { sampleCaseFans, sampleCases, sampleCPUCoolers, sampleCPUs, sampleGPUs, sampleMemories, sampleMotherboards, samplePSUs, sampleStorage } from '@/data/samplePcComponents';
+import { ComponentCategory } from '@/types/components';
 import { useParams } from "next/navigation";
 
-// Sample data - you can replace with your own
-const sampleCPUs = [
-  {
-    id: "cpu-1",
-    name: "AMD Ryzen 9 7950X",
-    brand: "AMD",
-    price: 699.99,
-    image: "/api/placeholder/400/300",
-    highlights: ["16 Cores", "32 Threads", "5.7GHz Boost", "64MB Cache"],
-    socket: "AM5",
-    cores: 16,
-    threads: 32,
-    clockSpeed: "4.5GHz Base / 5.7GHz Boost",
-    cache: "64MB L3",
-  },
-  // Add more CPUs...
-];
-
-const sampleCoolers = [
-  {
-    id: "cooler-1",
-    name: "Noctua NH-D15",
-    brand: "Noctua",
-    price: 99.99,
-    image: "/api/placeholder/400/300",
-    highlights: ["Dual Tower", "Premium Fans", "Superior Cooling", "Low Noise"],
-    socket: ["AM4", "AM5", "LGA1700"],
-    coolerType: "Air",
-    coolerSize: "165mm",
-    fanSpeed: "300-1500 RPM",
-    features: [],
-  },
-  // Add more coolers...
-];
 export default function ComponentSelection() {
   const params = useParams();
-  const categoryId = params.categoryId as string;
+  const categoryId = params.categoryId as ComponentCategory;
 
   const getComponentConfig = () => {
     switch (categoryId) {
       case 'cpu':
         return {
           title: 'Select CPU',
-          filters: cpuFilters,
+          filters: componentFilters.cpu,
           components: sampleCPUs,
-          priceRange: { min: 100, max: 1000 },
+          priceRange: { min: 0, max: 1000 },
           categoryId: categoryId,
         };
       case 'cpu-cooler':
         return {
           title: 'Select CPU Cooler',
-          filters: coolerFilters,
-          components: sampleCoolers,
-          priceRange: { min: 30, max: 300 },
+          filters: componentFilters.CPUCooler,
+          components: sampleCPUCoolers,
+          priceRange: { min: 0, max: 500 },
+          categoryId: categoryId,
+        };
+      case 'motherboard':
+        return {
+          title: 'Select Motherboard',
+          filters: componentFilters.motherboard,
+          components: sampleMotherboards,
+          priceRange: { min: 0, max: 500 },
+          categoryId: categoryId,
+        };
+      case 'memory':
+        return {
+          title: 'Select Memory',
+          filters: componentFilters.memory,
+          components: sampleMemories,
+          priceRange: { min: 0, max: 500 },
+          categoryId: categoryId,
+        };
+      case 'gpu':
+        return {
+          title: 'Select GPU',
+          filters: componentFilters.gpu,
+          components: sampleGPUs,
+          priceRange: { min: 0, max: 2000 },
+          categoryId: categoryId,
+        };
+      case 'storage':
+        return {
+          title: 'Select Storage',
+          filters: componentFilters.storage,
+          components: sampleStorage,
+          priceRange: { min: 0, max: 500 },
+          categoryId: categoryId,
+        };
+      case 'psu':
+        return {
+          title: 'Select PSU',
+          filters: componentFilters.psu,
+          components: samplePSUs,
+          priceRange: { min: 0, max: 200 },
+          categoryId: categoryId,
+        };
+      case 'case':
+        return {
+          title: 'Select Case',
+          filters: componentFilters.case,
+          components: sampleCases,
+          priceRange: { min: 0, max: 200 },
+          categoryId: categoryId,
+        };
+      case 'case-fans':
+        return {
+          title: 'Select Case Fans',
+          filters: componentFilters.caseFans,
+          components: sampleCaseFans,
+          priceRange: { min: 0, max: 100 },
           categoryId: categoryId,
         };
       default:

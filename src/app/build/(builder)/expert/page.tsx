@@ -10,9 +10,11 @@ import {
   componentsList,
   SelectedComponentsState,
 } from "@/data/componentsList";
+import { sampleCaseFans, sampleCases, sampleCPUCoolers, sampleCPUs, sampleGPUs, sampleMemories, sampleMotherboards, samplePSUs, sampleStorage } from '@/data/samplePcComponents';
 import { BaseComponent, SelectedComponent } from "@/types/components";
-import { AlertCircle, ChevronRight, X, Zap } from "lucide-react";
+import { AlertCircle, ChevronRight, MonitorSmartphoneIcon, X, Zap } from "lucide-react";
 import Image from "next/image";
+import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -59,16 +61,17 @@ export default function ExpertBuilder() {
     categoryId: string,
     currentComponent: SelectedComponent
   ) => {
-    // This would typically come from your database or API
-    return [
-      {
-        id: "similar1",
-        name: "Similar Component 1",
-        price: currentComponent.price - 50,
-        highlights: ["Feature 1", "Feature 2", "Feature 3"],
-      },
-      // Add more similar components...
-    ];
+    switch(categoryId) {
+      case 'cpu': return sampleCPUs;
+      case 'cpu-cooler': return sampleCPUCoolers;
+      case 'motherboard': return sampleMotherboards;
+      case 'memory': return sampleMemories;
+      case 'gpu': return sampleGPUs;
+      case 'storage': return sampleStorage;
+      case 'psu' : return samplePSUs;
+      case 'case': return sampleCases;
+      case 'case-fans': return sampleCaseFans;
+    }
   };
 
   const totalCost = Object.values(selectedComponents)
@@ -81,7 +84,7 @@ export default function ExpertBuilder() {
 
   return (
     <div className="container mx-auto py-8 relative">
-      <div className={`max-w-3xl mx-auto transition-all duration-300`}>
+      <div className={`max-w-7xl mx-auto transition-all duration-300`}>
         <Card>
           <CardContent className="p-6">
             {/* Summary Section */}
@@ -143,8 +146,7 @@ export default function ExpertBuilder() {
                       ).length === 0
                     }
                     onClick={() => {
-                      // Handle save/export functionality
-                      console.log("Saving build...");
+                      router.push("/build/saved");
                     }}
                   >
                     Save Build
@@ -206,9 +208,11 @@ export default function ExpertBuilder() {
                                     className="w-16 h-16 object-cover rounded"
                                   />
                                   <div>
-                                    <p className="font-medium">
+                                    <Link href={`/build/component/cpu/${component.id}`} >
+                                    <p className="font-medium hover:text-blue-600">
                                       {selected.name}
                                     </p>
+                                    </Link>
                                     <p className="text-sm text-gray-500">
                                       ${selected.price}
                                     </p>
@@ -239,7 +243,7 @@ export default function ExpertBuilder() {
                         {selected ? (
                           <div className="flex items-center space-x-2">
                             <Button
-                              variant="outline"
+                              variant="destructive"
                               size="sm"
                               onClick={() =>
                                 handleRemoveComponent(component.category)
@@ -247,6 +251,18 @@ export default function ExpertBuilder() {
                             >
                               <X className="h-4 w-4 mr-1" />
                               Remove
+                            </Button>
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() =>
+                                router.push(
+                                  `/build/component/benchmark/${selected.id}`
+                                )
+                              }
+                            >
+                              <MonitorSmartphoneIcon className="h-4 w-4 mr-1" />
+                              See BenchMarks
                             </Button>
                             <Button
                               variant="outline"

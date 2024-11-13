@@ -1,5 +1,8 @@
 import { BaseComponent, ColumnConfig, ComponentCategory, componentColumns } from '@/types/components';
+import { ArrowUpRight, Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 
 interface ComponentComparisonTableProps {
@@ -15,11 +18,22 @@ export const ComponentComparisonTable: React.FC<ComponentComparisonTableProps> =
   similarComponents,
   onSelect
 }) => {
+  const router = useRouter();
   const columns = componentColumns[type];
 
   const renderCell = (component: BaseComponent, column: ColumnConfig) => {
     const value = component[column.key as keyof BaseComponent];
     return column.render ? column.render(value) : value;
+  };
+
+  // Calculate benchmark score (example implementation)
+  const getBenchmarkScore = (component: BaseComponent) => {
+    // Replace with actual benchmark calculation logic
+    return Math.floor(Math.random() * 100);
+  };
+
+  const handleViewDetails = (component: BaseComponent) => {
+    router.push(`/build/component/${type}/${component.id}`);
   };
 
   return (
@@ -41,7 +55,9 @@ export const ComponentComparisonTable: React.FC<ComponentComparisonTableProps> =
                     {column.label}
                   </TableHead>
                 ))}
-                <TableHead className="text-right">Price</TableHead>
+                <TableHead>Benchmark</TableHead>
+
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -56,8 +72,25 @@ export const ComponentComparisonTable: React.FC<ComponentComparisonTableProps> =
                     {renderCell(selected, column)}
                   </TableCell>
                 ))}
-                <TableCell className="text-right font-medium">
-                  ${selected.price}
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-24 bg-gray-200 rounded-full">
+                      <div
+                        className="h-2 bg-blue-600 rounded-full"
+                        style={{ width: `${getBenchmarkScore(selected)}%` }}
+                      />
+                    </div>
+                    <span className="text-sm">{getBenchmarkScore(selected)}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleViewDetails(selected)}
+                  >
+                    <ArrowUpRight className="h-4 w-4" />
+                  </Button>
                 </TableCell>
               </TableRow>
 
@@ -65,25 +98,41 @@ export const ComponentComparisonTable: React.FC<ComponentComparisonTableProps> =
               {similarComponents.map((component) => (
                 <TableRow
                   key={component.id}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
-                  onClick={() => onSelect(component)}
+                  className="hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   {columns.map((column) => (
                     <TableCell key={`${component.id}-${column.key}`}>
                       {renderCell(component, column)}
                     </TableCell>
                   ))}
-                  <TableCell className="text-right">
-                    <div className="flex flex-col items-end">
-                      <span className="font-medium">${component.price}</span>
-                      {component.price !== selected.price && (
-                        <span className={`text-xs ${
-                          component.price < selected.price ? 'text-green-500' : 'text-red-500'
-                        }`}>
-                          {component.price < selected.price ? '-' : '+'}$
-                          {Math.abs(component.price - selected.price).toFixed(2)}
-                        </span>
-                      )}
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-24 bg-gray-200 rounded-full">
+                        <div
+                          className="h-2 bg-blue-600 rounded-full"
+                          style={{ width: `${getBenchmarkScore(component)}%` }}
+                        />
+                      </div>
+                      <span className="text-sm">{getBenchmarkScore(component)}</span>
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleViewDetails(component)}
+                      >
+                        <ArrowUpRight className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => onSelect(component)}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
